@@ -16,7 +16,6 @@ from discord.ext.commands import Context
 from helpers import checks
 
 
-
 class Choice(discord.ui.View):
     def __init__(self):
         super().__init__()
@@ -104,6 +103,7 @@ class Fun(commands.Cog, name="fun"):
     def __init__(self, bot):
         self.bot = bot
         bot.pats = 0
+
     @commands.hybrid_command(name="randomfact", description="Get a random fact.")
     @checks.not_blacklisted()
     async def randomfact(self, context: Context) -> None:
@@ -168,21 +168,16 @@ class Fun(commands.Cog, name="fun"):
         view = RockPaperScissorsView()
         await context.send("Please make your choice", view=view)
 
-    
-    
     @commands.hybrid_command(name="pat", description="Pat the squirrel")
     @checks.not_blacklisted()
-
-    
-    
     async def pat(self, context: Context) -> None:
-         self.bot.pats += 1
-         embed = discord.Embed(
+        self.bot.pats += 1
+        embed = discord.Embed(
             title="You patted the squirrel",
             description=f"The squirrel has been patted {self.bot.pats} times.",
             color=0x9C84EF,
         )
-         await context.send(embed=embed)
+        await context.send(embed=embed)
 
 
 async def setup(bot):
