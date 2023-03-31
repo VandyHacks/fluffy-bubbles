@@ -98,6 +98,18 @@ class RockPaperScissorsView(discord.ui.View):
         super().__init__()
         self.add_item(RockPaperScissors())
 
+class Dig(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    @discord.ui.button(label="Dig", style=discord.ButtonStyle.blurple)
+    async def confirm(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.value = "dig"
+        self.stop()
+
 
 class Fun(commands.Cog, name="fun"):
     def __init__(self, bot):
@@ -179,6 +191,7 @@ class Fun(commands.Cog, name="fun"):
         )
         await context.send(embed=embed)
 
+    
 
 async def setup(bot):
     await bot.add_cog(Fun(bot))
