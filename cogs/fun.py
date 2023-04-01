@@ -197,34 +197,43 @@ class Fun(commands.Cog, name="fun"):
     async def dig(self, context: Context) -> None:
        time = datetime.datetime.now()
        minute = time.minute
-       if minute% 5 == 0: #Prize will be available every five minutes
+       if minute % 5 == 0: #Only active during times ending in 5 or 0
             button = Dig()
             embed = discord.Embed(description="Ready to dig!", color=0x9C84EF)
+            embed.set_image(url="https://media.giphy.com/media/3dK3ko9lmeEJesIstK/giphy.gif")
             message = await context.send(embed=embed, view=button)
             await button.wait()
+
+            #Choose a prize
             rand = random.randint(0,100)
             if rand > 0 and rand < 71:
                 embed = discord.Embed(
-                    description = f"**Common**\nYou got an acorn! 🌰",
+                    title="Common",
+                    description = f"You got an acorn! 🌰",
                     colour = 0xF59E42,
                 )
+                embed.set_image(url="https://media.giphy.com/media/0SoabZIDhTylJmYtIO/giphy.gif")
             elif rand > 70 and rand < 91:
                 embed = discord.Embed(
-                    description=f"**Rare**\nYou've been visited by a lucky squirrel! 🐿",
+                    title="Rare",
+                    description=f"You've been visited by a lucky squirrel! 🐿",
                     colour = 0x9C84EF
                 )
+                embed.set_image(url="https://media.giphy.com/media/lODjakhWuaiihYXm3r/giphy.gif")
             elif rand > 90 and rand < 100:
                 embed = discord.Embed(
-                    description = f"**Epic**\nYou unlocked a new sticker! 🎉",
+                    title="Epic",
+                    description = f"You unlocked a new sticker! 🎉",
                     colour = 0xfcca03
                 )
+                embed.set_image(url="https://media.giphy.com/media/EiZQwKjFPDrYFnzrhA/giphy.gif")
             else:
                 embed = discord.Embed(
-                    description = f"**Legendary**\nYou gained 10 points! ⭐️",
+                    title="Legendary",
+                    description = f"You gained 10 points! ⭐️",
                     color =  0xfc2803
                 )
-
-
+                embed.set_image(url="https://media.giphy.com/media/0LakudBWks8MkyjRsC/giphy.gif")
             await message.edit(embed=embed, view=None, content=None)
        else :
            embed = discord.Embed(
