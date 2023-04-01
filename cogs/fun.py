@@ -12,7 +12,7 @@ import aiohttp
 import discord
 from discord.ext import commands
 from discord.ext.commands import Context
-
+import datetime
 from helpers import checks
 
 
@@ -189,39 +189,51 @@ class Fun(commands.Cog, name="fun"):
             description=f"The squirrel has been patted {self.bot.pats} times.",
             color=0x9C84EF,
         )
+        embed.set_image(url="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzAzZGMzOWY3ZjFlNTc1NTdjMzE4NzM3YmYwNGUzZjMyZDEwMTgyMCZjdD1n/GjFn41tOolLKX0dMTi/giphy.gif")
         await context.send(embed=embed)
 
     @commands.hybrid_command(name="dig", description="Dig for acorns and get a prize!")
     @checks.not_blacklisted()
     async def dig(self, context: Context) -> None:
-       button = Dig()
-       embed = discord.Embed(description="Ready to dig!", color=0x9C84EF)
-       message = await context.send(embed=embed, view=button)
-       await button.wait()
-       rand = random.randint(0,100)
-       if rand > 0 and rand < 71:
-           embed = discord.Embed(
-               description = f"**Common**\nYou got an acorn! 🌰",
-               colour = 0xF59E42,
-           )
-       elif rand > 70 and rand < 91:
-           embed = discord.Embed(
-               description=f"**Rare**\nYou've been visited by a lucky squirrel! 🐿",
-               colour = 0x9C84EF
-           )
-       elif rand > 90 and rand < 100:
-           embed = discord.Embed(
-               description = f"**Epic**\nYou unlocked a new sticker! 🎉",
-               colour = 0xfcca03
-           )
-       else:
-           embed = discord.Embed(
-               description = f"**Legendary**\nYou gained 10 points! ⭐️",
-               color =  0xfc2803
-           )
+       time = datetime.datetime.now()
+       minute = time.minute
+       if minute% 5 == 0: #Prize will be available every five minutes
+            button = Dig()
+            embed = discord.Embed(description="Ready to dig!", color=0x9C84EF)
+            message = await context.send(embed=embed, view=button)
+            await button.wait()
+            rand = random.randint(0,100)
+            if rand > 0 and rand < 71:
+                embed = discord.Embed(
+                    description = f"**Common**\nYou got an acorn! 🌰",
+                    colour = 0xF59E42,
+                )
+            elif rand > 70 and rand < 91:
+                embed = discord.Embed(
+                    description=f"**Rare**\nYou've been visited by a lucky squirrel! 🐿",
+                    colour = 0x9C84EF
+                )
+            elif rand > 90 and rand < 100:
+                embed = discord.Embed(
+                    description = f"**Epic**\nYou unlocked a new sticker! 🎉",
+                    colour = 0xfcca03
+                )
+            else:
+                embed = discord.Embed(
+                    description = f"**Legendary**\nYou gained 10 points! ⭐️",
+                    color =  0xfc2803
+                )
 
 
-       await message.edit(embed=embed, view=None, content=None)
+            await message.edit(embed=embed, view=None, content=None)
+       else :
+           embed = discord.Embed(
+               title="The Squirrel is asleep💤",
+               description="Come back again later!",
+               color=0x3238a8
+           )
+           embed.set_image(url="https://media.giphy.com/media/PLiW6toBco3wu2lqY0/giphy.gif")
+           await context.send(embed=embed)
     
 
 async def setup(bot):
