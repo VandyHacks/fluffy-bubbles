@@ -183,6 +183,11 @@ class Fun(commands.Cog, name="fun"):
     @commands.hybrid_command(name="pat", description="Pat the squirrel")
     @checks.not_blacklisted()
     async def pat(self, context: Context) -> None:
+        """
+        Incriment the squirrel counter.
+
+        :param context: The hybrid command context.
+        """
         self.bot.pats += 1
         embed = discord.Embed(
             title="You patted the squirrel",
@@ -192,9 +197,14 @@ class Fun(commands.Cog, name="fun"):
         embed.set_image(url="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzAzZGMzOWY3ZjFlNTc1NTdjMzE4NzM3YmYwNGUzZjMyZDEwMTgyMCZjdD1n/GjFn41tOolLKX0dMTi/giphy.gif")
         await context.send(embed=embed)
 
-    @commands.hybrid_command(name="dig", description="Dig for acorns and get a prize!")
+    @commands.hybrid_command(name="dig", description="Dig for acorns and get a prize! Available every 5 minutes.")
     @checks.not_blacklisted()
     async def dig(self, context: Context) -> None:
+       """
+       Get a random prize from the bot.
+
+       :param context: The hybrid command context.
+       """ 
        time = datetime.datetime.now()
        minute = time.minute
        if minute % 5 == 0: #Only active during times ending in 5 or 0
@@ -236,9 +246,12 @@ class Fun(commands.Cog, name="fun"):
                 embed.set_image(url="https://media.giphy.com/media/0LakudBWks8MkyjRsC/giphy.gif")
             await message.edit(embed=embed, view=None, content=None)
        else :
+           remaining = 5 - (minute % 10) if (minute % 10) < 5 else 10 - (minute % 10)
+           t = "minute" if remaining == 1 else "minutes"
+           
            embed = discord.Embed(
                title="The Squirrel is asleep💤",
-               description="Come back again later!",
+               description=f"Come back in {remaining} {t}!",
                color=0x3238a8
            )
            embed.set_image(url="https://media.giphy.com/media/PLiW6toBco3wu2lqY0/giphy.gif")
