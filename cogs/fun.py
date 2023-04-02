@@ -7,11 +7,13 @@ Version: 5.5.0
 """
 
 import random
+
 import aiohttp
 import discord
 import datetime
 from discord.ext import commands
 from discord.ext.commands import Context
+
 from helpers import checks
 
 
@@ -219,7 +221,7 @@ class Fun(commands.Cog, name="fun"):
         """
         self.bot.pats += 1
         embed = discord.Embed(
-            title="You patted the squirrel",
+            title="You patted the squirrel!",
             description=f"The squirrel has been patted {self.bot.pats} times.",
             color=0x9C84EF,
         )
