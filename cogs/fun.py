@@ -7,12 +7,11 @@ Version: 5.5.0
 """
 
 import random
-
 import aiohttp
 import discord
+import datetime
 from discord.ext import commands
 from discord.ext.commands import Context
-import datetime
 from helpers import checks
 
 
@@ -102,6 +101,36 @@ class Dig(discord.ui.View):
     def __init__(self):
         super().__init__()
         self.value = None
+
+    async def get_prize(self, rand: int):
+        if rand > 0 and rand < 71:
+            return {
+                "title": "Common",
+                "description": "You got an acorn! 🌰",
+                "image_url": "https://media.giphy.com/media/0SoabZIDhTylJmYtIO/giphy.gif",
+                "color": 0xF59E42
+            }
+        elif rand > 70 and rand < 91:
+            return {
+                "title": "Rare",
+                "description": "You've been visited by a lucky squirrel! 🐿",
+                "image_url": "https://media.giphy.com/media/lODjakhWuaiihYXm3r/giphy.gif",
+                "color": 0x9C84EF
+            }
+        elif rand > 90 and rand < 100:
+            return {
+                "title": "Epic",
+                "description": "You unlocked a new sticker! 🎉",
+                "image_url": "https://media.giphy.com/media/EiZQwKjFPDrYFnzrhA/giphy.gif",
+                "color": 0xfcca03
+            }
+        else:
+            return {
+                "title": "Legendary",
+                "description": "You gained 10 points! ⭐️",
+                "image_url": "https://media.giphy.com/media/0LakudBWks8MkyjRsC/giphy.gif",
+                "color": 0xfc2803
+            }
 
     @discord.ui.button(label="Dig", style=discord.ButtonStyle.blurple)
     async def confirm(
@@ -200,63 +229,51 @@ class Fun(commands.Cog, name="fun"):
     @commands.hybrid_command(name="dig", description="Dig for acorns and get a prize! Available every 5 minutes.")
     @checks.not_blacklisted()
     async def dig(self, context: Context) -> None:
-       """
-       Get a random prize from the bot.
+        """
+        Get a random prize from the bot.
 
-       :param context: The hybrid command context.
-       """ 
-       time = datetime.datetime.now()
-       minute = time.minute
-       if minute % 5 == 0: #Only active during times ending in 5 or 0
+        :param context: The hybrid command context.
+        """ 
+        time = datetime.datetime.now()
+        minute = time.minute
+        if minute % 5 == 0: #Only active during times ending in 5 or 0
             button = Dig()
-            embed = discord.Embed(description="Ready to dig!", color=0x9C84EF)
+            embed = discord.Embed(
+                description="Ready to dig!",
+                color=0x9C84EF
+            )
             embed.set_image(url="https://media.giphy.com/media/3dK3ko9lmeEJesIstK/giphy.gif")
             message = await context.send(embed=embed, view=button)
             await button.wait()
 
             #Choose a prize
             rand = random.randint(0,100)
-            if rand > 0 and rand < 71:
-                embed = discord.Embed(
-                    title="Common",
-                    description = f"You got an acorn! 🌰",
-                    colour = 0xF59E42,
-                )
-                embed.set_image(url="https://media.giphy.com/media/0SoabZIDhTylJmYtIO/giphy.gif")
-            elif rand > 70 and rand < 91:
-                embed = discord.Embed(
-                    title="Rare",
-                    description=f"You've been visited by a lucky squirrel! 🐿",
-                    colour = 0x9C84EF
-                )
-                embed.set_image(url="https://media.giphy.com/media/lODjakhWuaiihYXm3r/giphy.gif")
-            elif rand > 90 and rand < 100:
-                embed = discord.Embed(
-                    title="Epic",
-                    description = f"You unlocked a new sticker! 🎉",
-                    colour = 0xfcca03
-                )
-                embed.set_image(url="https://media.giphy.com/media/EiZQwKjFPDrYFnzrhA/giphy.gif")
-            else:
-                embed = discord.Embed(
-                    title="Legendary",
-                    description = f"You gained 10 points! ⭐️",
-                    color =  0xfc2803
-                )
-                embed.set_image(url="https://media.giphy.com/media/0LakudBWks8MkyjRsC/giphy.gif")
+            prize = await button.get_prize(rand)
+            title = prize["title"]
+            description = prize["description"]
+            image_url = prize["image_url"]
+            color = prize["color"]
+            
+            embed = discord.Embed(
+                title=title,
+                description=description,
+                color=color
+            )
+            embed.set_image(url=image_url)
+            
             await message.edit(embed=embed, view=None, content=None)
-       else :
-           remaining = 5 - (minute % 10) if (minute % 10) < 5 else 10 - (minute % 10)
-           t = "minute" if remaining == 1 else "minutes"
-           
-           embed = discord.Embed(
-               title="The Squirrel is asleep💤",
-               description=f"Come back in {remaining} {t}!",
-               color=0x3238a8
-           )
-           embed.set_image(url="https://media.giphy.com/media/PLiW6toBco3wu2lqY0/giphy.gif")
-           await context.send(embed=embed)
-    
+        else:
+            remaining = 5 - (minute % 10) if (minute % 10) < 5 else 10 - (minute % 10)
+            t = "minute" if remaining == 1 else "minutes"
+            embed = discord.Embed(
+                title="The Squirrel is asleep💤",
+                description=f"Come back in {remaining} {t}!",
+                color=0x3238a8
+            )
+            embed.set_image(url="https://media.giphy.com/media/PLiW6toBco3wu2lqY0/giphy.gif")
+            
+            await context.send(embed=embed)
+        
 
 async def setup(bot):
     await bot.add_cog(Fun(bot))
