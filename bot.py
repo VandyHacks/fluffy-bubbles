@@ -21,8 +21,6 @@ from discord.ext.commands import Bot, Context
 
 import exceptions
 
-from test_data.test_data_generator import generate_random_schedule
-
 if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
 else:
@@ -162,9 +160,6 @@ async def on_ready() -> None:
     bot.logger.info(f"Python version: {platform.python_version()}")
     bot.logger.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
     bot.logger.info("-------------------")
-
-    # create a random schedule when bot starts
-    generate_random_schedule()
 
     status_task.start()
     if config["sync_commands_globally"]:

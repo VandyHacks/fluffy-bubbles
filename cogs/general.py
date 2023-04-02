@@ -8,7 +8,6 @@ Version: 5.5.0
 
 import platform
 import random
-import json
 
 import aiohttp
 import discord
@@ -17,6 +16,8 @@ from discord.ext import commands
 from discord.ext.commands import Context
 
 from helpers import checks
+
+import mongo_manager
 
 
 class General(commands.Cog, name="general"):
@@ -251,24 +252,26 @@ class General(commands.Cog, name="general"):
 
         :param context: The hybrid command context.
         """
+        n = 5
         embed = discord.Embed(
             title="Schedule",
-            description="List of next 5 events coming up:",
+            description=f"List of next {n} events coming up:",
             color=0x9C84EF,
         )
 
-        with open(f"test_data/schedule_data.json", "r") as f:
-            schedule = json.load(f)
-            for event in schedule[:5]:
-                event_info = []
-                for info_key, info_value in event.items():
-                    event_info.append(f"{info_key} : {info_value}")
-                event_text = "\n".join(event_info)
-                embed.add_field(
-                    name=event["type"].capitalize(),
-                    value=f"```{event_text}```",
-                    inline=False,
-                )
+        schedule = mongo_manager.getNextNEvents(n)
+        for event in schedule:
+            event_info = []
+            event_info.append(
+                f"location : {event['location'] if event['location'] != '' else 'TBD'}"
+            )
+            event_info.append(f"start time : {event['startTime']}")
+            event_text = "\n".join(event_info)
+            embed.add_field(
+                name=event["name"].capitalize(),
+                value=f"```{event_text}```",
+                inline=False,
+            )
         await context.send(embed=embed)
 
 
