@@ -10,6 +10,7 @@ import random
 
 import aiohttp
 import discord
+import datetime
 from discord.ext import commands
 from discord.ext.commands import Context
 
@@ -98,6 +99,48 @@ class RockPaperScissorsView(discord.ui.View):
         super().__init__()
         self.add_item(RockPaperScissors())
 
+class Dig(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    async def get_prize(self, rand: int):
+        if rand > 0 and rand < 71:
+            return {
+                "title": "Common",
+                "description": "You got an acorn! 🌰",
+                "image_url": "https://media.giphy.com/media/0SoabZIDhTylJmYtIO/giphy.gif",
+                "color": 0xF59E42
+            }
+        elif rand > 70 and rand < 91:
+            return {
+                "title": "Rare",
+                "description": "You've been visited by a lucky squirrel! 🐿",
+                "image_url": "https://media.giphy.com/media/lODjakhWuaiihYXm3r/giphy.gif",
+                "color": 0x9C84EF
+            }
+        elif rand > 90 and rand < 100:
+            return {
+                "title": "Epic",
+                "description": "You unlocked a new sticker! 🎉",
+                "image_url": "https://media.giphy.com/media/EiZQwKjFPDrYFnzrhA/giphy.gif",
+                "color": 0xfcca03
+            }
+        else:
+            return {
+                "title": "Legendary",
+                "description": "You gained 10 points! ⭐️",
+                "image_url": "https://media.giphy.com/media/0LakudBWks8MkyjRsC/giphy.gif",
+                "color": 0xfc2803
+            }
+
+    @discord.ui.button(label="Dig", style=discord.ButtonStyle.blurple)
+    async def confirm(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.value = "dig"
+        self.stop()
+
 
 class Fun(commands.Cog, name="fun"):
     def __init__(self, bot):
@@ -171,14 +214,68 @@ class Fun(commands.Cog, name="fun"):
     @commands.hybrid_command(name="pat", description="Pat the squirrel")
     @checks.not_blacklisted()
     async def pat(self, context: Context) -> None:
+        """
+        Incriment the squirrel counter.
+
+        :param context: The hybrid command context.
+        """
         self.bot.pats += 1
         embed = discord.Embed(
-            title="You patted the squirrel",
+            title="You patted the squirrel!",
             description=f"The squirrel has been patted {self.bot.pats} times.",
             color=0x9C84EF,
         )
+        embed.set_image(url="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzAzZGMzOWY3ZjFlNTc1NTdjMzE4NzM3YmYwNGUzZjMyZDEwMTgyMCZjdD1n/GjFn41tOolLKX0dMTi/giphy.gif")
         await context.send(embed=embed)
 
+    @commands.hybrid_command(name="dig", description="Dig for acorns and get a prize! Available every 5 minutes.")
+    @checks.not_blacklisted()
+    async def dig(self, context: Context) -> None:
+        """
+        Get a random prize from the bot.
+
+        :param context: The hybrid command context.
+        """ 
+        time = datetime.datetime.now()
+        minute = time.minute
+        if minute % 5 == 0: #Only active during times ending in 5 or 0
+            button = Dig()
+            embed = discord.Embed(
+                description="Ready to dig!",
+                color=0x9C84EF
+            )
+            embed.set_image(url="https://media.giphy.com/media/3dK3ko9lmeEJesIstK/giphy.gif")
+            message = await context.send(embed=embed, view=button)
+            await button.wait()
+
+            #Choose a prize
+            rand = random.randint(0,100)
+            prize = await button.get_prize(rand)
+            title = prize["title"]
+            description = prize["description"]
+            image_url = prize["image_url"]
+            color = prize["color"]
+            
+            embed = discord.Embed(
+                title=title,
+                description=description,
+                color=color
+            )
+            embed.set_image(url=image_url)
+            
+            await message.edit(embed=embed, view=None, content=None)
+        else:
+            remaining = 5 - (minute % 10) if (minute % 10) < 5 else 10 - (minute % 10)
+            t = "minute" if remaining == 1 else "minutes"
+            embed = discord.Embed(
+                title="The Squirrel is asleep💤",
+                description=f"Come back in {remaining} {t}!",
+                color=0x3238a8
+            )
+            embed.set_image(url="https://media.giphy.com/media/PLiW6toBco3wu2lqY0/giphy.gif")
+            
+            await context.send(embed=embed)
+        
 
 async def setup(bot):
     await bot.add_cog(Fun(bot))
