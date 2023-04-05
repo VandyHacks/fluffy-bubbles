@@ -8,6 +8,7 @@ Version: 5.5.0
 
 import platform
 import random
+from datetime import datetime
 
 import aiohttp
 import discord
@@ -17,7 +18,8 @@ from discord.ext.commands import Context
 
 from helpers import checks
 
-import mongo_manager
+import pymongo
+from mongo_manager import MongoSingleton
 
 
 class General(commands.Cog, name="general"):
@@ -252,15 +254,27 @@ class General(commands.Cog, name="general"):
 
         :param context: The hybrid command context.
         """
-        n = 5
+        n = 5  # number of events to show
+        currentTime = datetime.now()
+
         embed = discord.Embed(
             title="Schedule",
             description=f"List of next {n} events coming up:",
             color=0x9C84EF,
         )
 
-        schedule = mongo_manager.getNextNEvents(n)
-        for event in schedule:
+        # new instance is not created, the same one from bot.py load_cogs() is being used
+        mongoInstance = MongoSingleton()
+
+        schedule = [
+            event
+            for event in list(
+                mongoInstance.db.events.find().sort("startTime", pymongo.ASCENDING)
+            )
+            if event["startTime"] < currentTime
+        ]
+
+        for event in schedule[:n]:
             event_info = []
             event_info.append(
                 f"location : {event['location'] if event['location'] != '' else 'TBD'}"

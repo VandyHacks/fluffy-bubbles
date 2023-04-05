@@ -5,7 +5,6 @@ Description:
 
 Version: 5.5.0
 """
-# test
 import asyncio
 import json
 import logging
@@ -20,6 +19,8 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
 
 import exceptions
+
+from mongo_manager import MongoSingleton
 
 if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -299,6 +300,12 @@ async def load_cogs() -> None:
             except Exception as e:
                 exception = f"{type(e).__name__}: {e}"
                 bot.logger.error(f"Failed to load extension {extension}\n{exception}")
+
+    try:
+        mongoInstance = MongoSingleton()
+    except Exception as e:
+        exception = f"{type(e).__name__}: {e}"
+        bot.logger.error(f"Failed to connect to mongoDB {exception}")
 
 
 asyncio.run(init_db())
