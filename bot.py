@@ -5,7 +5,6 @@ Description:
 
 Version: 5.5.0
 """
-
 import asyncio
 import json
 import logging
@@ -21,7 +20,7 @@ from discord.ext.commands import Bot, Context
 
 import exceptions
 
-from test_data.test_data_generator import generate_random_schedule
+from mongo_manager import MongoSingleton
 
 if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -163,9 +162,6 @@ async def on_ready() -> None:
     bot.logger.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
     bot.logger.info("-------------------")
 
-    # create a random schedule when bot starts
-    generate_random_schedule()
-
     status_task.start()
     if config["sync_commands_globally"]:
         bot.logger.info("Syncing commands globally...")
@@ -304,6 +300,12 @@ async def load_cogs() -> None:
             except Exception as e:
                 exception = f"{type(e).__name__}: {e}"
                 bot.logger.error(f"Failed to load extension {extension}\n{exception}")
+
+    try:
+        mongoInstance = MongoSingleton()
+    except Exception as e:
+        exception = f"{type(e).__name__}: {e}"
+        bot.logger.error(f"Failed to connect to mongoDB {exception}")
 
 
 asyncio.run(init_db())

@@ -8,7 +8,7 @@ Version: 5.5.0
 
 import platform
 import random
-import json
+from datetime import datetime
 
 import aiohttp
 import discord
@@ -17,6 +17,9 @@ from discord.ext import commands
 from discord.ext.commands import Context
 
 from helpers import checks
+
+import pymongo
+from mongo_manager import MongoSingleton
 
 
 class General(commands.Cog, name="general"):
@@ -251,24 +254,38 @@ class General(commands.Cog, name="general"):
 
         :param context: The hybrid command context.
         """
+        n = 5  # number of events to show
+        currentTime = datetime.now()
+
         embed = discord.Embed(
             title="Schedule",
-            description="List of next 5 events coming up:",
+            description=f"List of next {n} events coming up:",
             color=0x9C84EF,
         )
 
-        with open(f"test_data/schedule_data.json", "r") as f:
-            schedule = json.load(f)
-            for event in schedule[:5]:
-                event_info = []
-                for info_key, info_value in event.items():
-                    event_info.append(f"{info_key} : {info_value}")
-                event_text = "\n".join(event_info)
-                embed.add_field(
-                    name=event["type"].capitalize(),
-                    value=f"```{event_text}```",
-                    inline=False,
-                )
+        # new instance is not created, the same one from bot.py load_cogs() is being used
+        mongoInstance = MongoSingleton()
+
+        schedule = [
+            event
+            for event in list(
+                mongoInstance.db.events.find().sort("startTime", pymongo.ASCENDING)
+            )
+            if event["startTime"] < currentTime
+        ]
+
+        for event in schedule[:n]:
+            event_info = []
+            event_info.append(
+                f"location : {event['location'] if event['location'] != '' else 'TBD'}"
+            )
+            event_info.append(f"start time : {event['startTime']}")
+            event_text = "\n".join(event_info)
+            embed.add_field(
+                name=event["name"].capitalize(),
+                value=f"```{event_text}```",
+                inline=False,
+            )
         await context.send(embed=embed)
 
 
