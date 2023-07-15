@@ -21,6 +21,7 @@ from helpers import checks
 import pymongo
 from mongo_manager import MongoSingleton
 
+from discord.utils import get
 
 class General(commands.Cog, name="general"):
     def __init__(self, bot):
@@ -288,6 +289,26 @@ class General(commands.Cog, name="general"):
             )
         await context.send(embed=embed)
 
+    @commands.hybrid_command(
+            name="team",
+            description="Create a private channel for your team",
+        )
+    @checks.not_blacklisted()
+    async def team(self, context: Context, teamName: str = None) -> None:
+        """
+        Get the current price of bitcoin.
+
+        :param context: The hybrid command context.
+        :param teamName: The name of the channel to be created.
+        """
+
+        admin_role = get(context.guild.roles, name="owner")
+        overwrites = {
+            context.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            context.author: discord.PermissionOverwrite(read_messages=True),
+            admin_role: discord.PermissionOverwrite(read_messages=True)
+        }
+        await context.guild.create_text_channel(teamName, overwrites=overwrites)
 
 async def setup(bot):
     await bot.add_cog(General(bot))
