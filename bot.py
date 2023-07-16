@@ -285,7 +285,23 @@ async def on_command_error(context: Context, error) -> None:
         await context.send(embed=embed)
     else:
         raise error
+ 
+@bot.event
+async def on_reaction_add(reaction, user):
 
+    """
+    The code in this function executes when someone reacts to a team creation message.
+    Assigns specific team role to user.
+
+    param: reaction: Discord reaction
+    param: user: The user who used a reaction
+    """
+    if reaction.emoji == '🌸':
+        team = reaction.message.embeds[0].title
+        teamName = team.split()
+        teamName[1] = teamName[1].replace('\"', '')
+        Role = discord.utils.get(user.guild.roles, name=teamName[1])
+        await user.add_roles(Role)
 
 async def load_cogs() -> None:
     """

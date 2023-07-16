@@ -296,19 +296,31 @@ class General(commands.Cog, name="general"):
     @checks.not_blacklisted()
     async def team(self, context: Context, teamName: str = None) -> None:
         """
-        Get the current price of bitcoin.
+        Create a private channel and corresponding role for a team.
 
         :param context: The hybrid command context.
         :param teamName: The name of the channel to be created.
         """
+        #create a specific role for the channel
+        await context.guild.create_role(name=teamName)
 
+        #Set permissions for the channel
         admin_role = get(context.guild.roles, name="owner")
+        channel_role = get(context.guild.roles, name=teamName)
         overwrites = {
             context.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            context.author: discord.PermissionOverwrite(read_messages=True),
+            channel_role: discord.PermissionOverwrite(read_messages=True),
             admin_role: discord.PermissionOverwrite(read_messages=True)
         }
         await context.guild.create_text_channel(teamName, overwrites=overwrites)
-
+        embed = discord.Embed(
+                title=f"Team \"{teamName}\" created!",
+                description="react to this message to join the channel",
+                color=0x3238a8
+            )
+        
+        moji = await context.send(embed=embed)
+        await moji.add_reaction('🌸')
+        
 async def setup(bot):
     await bot.add_cog(General(bot))
