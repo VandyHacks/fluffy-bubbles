@@ -1,0 +1,37 @@
+﻿Day,Name,Date,Location,Event Type
+1,Check-In,5:30 - 8:00 PM,ESB Lobby,All Hackers
+1,Dinner (Satay’s),6:00 - 8:00 PM,ESB Lobby,Food
+1,Opening Ceremony,8:00 - 9:00 PM,Student Life Center,All Hackers
+1,Team Matching,9:30 - 10:00 PM,ESB 201 (Common Makerspace),All Hackers
+1,Hacking Begins!,10:00 PM,,All Hackers
+1,Introduction to Web Development Workshop,10:00 PM - 11:00 PM,ESB 048,Workshops
+1,Transformers and Applied ML Workshop,11:00 PM - 12:00 AM,ESB 048,Workshops
+2,Midnight Snack (Jeni’s Ice Cream) ,12:00 - 1:00 AM,ESB Lobby,Food
+2,"Containerization, Docker and Kubernetes Workshop",12:00 - 1:00 AM,ESB 048,Workshops
+2,Data Visualization Workshop,1:00 - 2:00 AM,ESB 048,Workshops
+2,Midnight Gaming,3:00 - 4:00 AM,ESB 044,Activities
+2,Breakfast (Jason’s Deli),8:00 - 9:30 AM,ESB Lobby,Food
+2,Resin Pour,9:00 - 10:00 AM,ESB 044,Activities
+2,Command Line Essentials Workshop,9:00 - 9:30 AM,ESB 048,Workshops
+2,Dynamic Programming Workshop,9:30 - 10:00 AM,ESB 048,Workshops
+2,Design & Deployment Workshop,10:00 - 11:00 AM,ESB 048,Workshops
+2,It’s On You: CS & Ethics Workshop,11:00 AM - 12:00 PM,ESB 048,Workshops
+2,Boat Building,10:30 AM - 1:30 PM,ESB Lobby,Activities
+2,Lunch (Inchin’s),12:30 - 2:30 PM,ESB Lobby,Food
+2,Snyk Cybersecurity Challenge,3:00 - 4:00 PM,ESB 044,Activities
+2,Speaker Event with Dr. Sprinkle,4:00 - 5:00 PM,ESB 048,Speaker
+2,Watercolor Painting,5:00 - 6:00 PM,ESB 044,Activities
+2,Dinner (Two Boats Pizza),6:00 - 7:30 PM,ESB Lobby,Food
+2,MLH Cupstacking,7:30 - 8:30 PM,ESB 044,Activities
+2,Swag Distribution,8:00 - 10:00 PM,ESB Lobby,All Hackers
+2,Navigating CS Internships Panel,9:00 - 10:00 PM,ESB 048,Career
+2,Cookie Decorating,10:00 - 11:00 PM,ESB Lobby,Activities
+3,Midnight Snack (Krispy Kreme),12:00 - 1:00 AM,ESB Lobby,Food
+3,VR Station,1:00 - 2:00 AM,ESB 044,Activities
+3,Breakfast (Jason’s Deli),8:00 - 9:00 AM,ESB Lobby,Food
+3,Hacking Ends!,9:00 AM,,All Hackers
+3,Career Fair,10:00 AM - 12:30 PM,ESB 044,Career
+3,Lunch (Jersey Mike’s),11:30 AM - 1:00 PM,ESB Lobby,Food
+3,Expo A,10:00 - 11:00 AM,ESB 044,All Hackers
+3,Expo B,11:30 AM - 12:30 PM,ESB 044,All Hackers
+3,Closing Ceremony,1:30 - 3:00 PM,Langford Auditorium,All Hackers

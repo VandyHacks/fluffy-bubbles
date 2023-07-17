@@ -9,6 +9,7 @@ Version: 5.5.0
 import platform
 import random
 from datetime import datetime
+import csv
 
 import aiohttp
 import discord
@@ -288,6 +289,33 @@ class General(commands.Cog, name="general"):
             )
         await context.send(embed=embed)
 
+    @commands.hybrid_command(
+        name="eventinfo",
+        description="Get the time and day of an event.",
+    )
+    @checks.not_blacklisted()
+    @app_commands.describe(event_name="The name of the event you want to get info for.")
+    async def eventinfo(self, context: Context, *, event_name: str) -> None:
+        """
+        Get the time and day of an event.
+        
+        :param context: The hybrid command context.
+        :param event_name: The name of the event that should be searched by the user.
+        """
+        with open('docs/vhix_schedule.csv', 'r', encoding='utf-8-sig') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row["Name"].lower() == event_name.lower():
+                    embed = discord.Embed(
+                        title=f"Event: {row['Name']}",
+                        description=f"Day: {row['Day']}\nTime: {row['Date']}\nLocation: {row['Location']}\nEvent type: {row['Event Type']}",
+                        color=0x9C84EF,
+                    )
+                    await context.send(embed=embed)
+                    return
+
+            # if the event was not found
+            await context.send("Event not found.")
 
 async def setup(bot):
     await bot.add_cog(General(bot))
