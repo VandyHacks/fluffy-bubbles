@@ -303,6 +303,23 @@ async def on_reaction_add(reaction, user):
         Role = discord.utils.get(user.guild.roles, name=teamName[1])
         await user.add_roles(Role)
 
+@bot.event
+async def on_reaction_remove(reaction, user):
+
+    """
+    The code in this function executes when someone removes a reaction
+    to a team creation message. Assigns specific team role to user.
+
+    param: reaction: Discord reaction
+    param: user: The user who used a reaction
+    """
+    if reaction.emoji == '🌸':
+        team = reaction.message.embeds[0].title
+        teamName = team.split()
+        teamName[1] = teamName[1].replace('\"', '')
+        Role = discord.utils.get(user.guild.roles, name=teamName[1])
+        await user.remove_roles(Role)
+
 async def load_cogs() -> None:
     """
     The code in this function is executed whenever the bot will start.
